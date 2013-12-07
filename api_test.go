@@ -3,8 +3,8 @@ package influxdbc
 import "testing"
 
 func Test_createURL(t *testing.T) {
-	testDB := InfluxDB{"localhost", "tester", "password", "testdb"}
-	url := testDB.PostURL()
+	testDB := InfluxDB{"localhost", "tester", "password"}
+	url := testDB.SeriesURL("testdb")
 	expectedURL := "http://localhost/testdb/series?u=tester&p=password"
 	if url != "http://localhost/db/testdb/series?u=tester&p=password" {
 		t.Errorf("'%s' does not match expected url, '%s'", url, expectedURL)
