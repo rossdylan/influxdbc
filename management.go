@@ -8,67 +8,72 @@ import (
 )
 
 type CreateDBReq struct {
-	name              string
-	replicationFactor int
+	Name              string
+	ReplicationFactor int
 }
 
 type ClusterAdmin struct {
-	name     string
-	password string
+	Username string
+	Password string
 }
 
 type ClusterAdminUpdate struct {
-	password string
+	Password string
 }
 
-func (db InfluxDB) CreateDatabase(database string, repFactor int) {
+func (db InfluxDB) CreateDatabase(repFactor int) {
 	url := fmt.Sprintf("http://%s/db?u=%s&p=%s", db.host, db.username, db.password)
-	reqStruct := CreateDBReq{database, repFactor}
+	reqStruct := CreateDBReq{db.database, repFactor}
 	PostStruct(url, reqStruct)
 }
 
-func (db InfluxDB) DeleteDatabase(database string) {
-	url := fmt.Sprintf("http://%s/db/%s?u=%s&p=%s", db.host, database, db.username, db.password)
+func (db InfluxDB) DeleteDatabase(database string) error {
+	url := fmt.Sprintf("http://%s/db/%s?u=%s&p=%s", db.host, db.database, db.username, db.password)
 	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	result, _ := http.DefaultClient.Do(req)
 	defer result.Body.Close()
+	return nil
 }
 
-func (db InfluxDB) AddClusterAdmin(name, password string) {
+func (db InfluxDB) AddClusterAdmin(name, password string) error {
 	url := fmt.Sprintf("http://%s/cluster_admins?u=%s&p=%s", db.host, db.username, db.password)
 	reqStruct := ClusterAdmin{name, password}
-	PostStruct(url, reqStruct)
+	_, err := PostStruct(url, reqStruct)
+	return err
 }
 
-func (db InfluxDB) UpdateClusterAdmin(name, password string) {
+func (db InfluxDB) UpdateClusterAdmin(name, password string) error {
 	url := fmt.Sprintf("http://%s/cluster_admins/%s?u=%s&p=%s", db.host, name, db.username, db.password)
 	reqStruct := ClusterAdminUpdate{password}
-	PostStruct(url, reqStruct)
+	_, err := PostStruct(url, reqStruct)
+	return err
 }
 
-func (db InfluxDB) DeleteClusterAdmin(name string) {
+func (db InfluxDB) DeleteClusterAdmin(name string) error {
 	url := fmt.Sprintf("http://%s/cluster_admins/%s?u=%s&p=%s", db.host, name, db.username, db.password)
 	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	result, _ := http.DefaultClient.Do(req)
 	defer result.Body.Close()
+	return nil
 }
 
-func (db InfluxDB) GetClusterAdmins() []ClusterAdmin {
+func (db InfluxDB) GetClusterAdmins() ([]ClusterAdmin, error) {
 	url := fmt.Sprintf("http://%s/cluster_admins?u=%s&p=%s", db.host, db.username, db.password)
 	result, err := http.Get(url)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	defer result.Body.Close()
 	buf := new(bytes.Buffer)
 	buf.ReadFrom(result.Body)
 	admins := make([]ClusterAdmin, 0)
+	fmt.Println(admins)
 	json.Unmarshal(buf.Bytes(), &admins)
-	return admins
+	return admins, nil
 }
