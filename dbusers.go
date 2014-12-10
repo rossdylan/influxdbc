@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func (db InfluxDB) GetDatabaseUsers() (map[string]string, error) {
+func (db *InfluxDB) GetDatabaseUsers() (map[string]string, error) {
 	url := fmt.Sprintf("http://%s/db/%s/users?u=%s&p=%s", db.host, db.database, db.username, db.password)
 	result, err := http.Get(url)
 	defer result.Body.Close()
@@ -21,7 +21,7 @@ func (db InfluxDB) GetDatabaseUsers() (map[string]string, error) {
 	return users, nil
 }
 
-func (db InfluxDB) AddDatabaseUser(name, password string) error {
+func (db *InfluxDB) AddDatabaseUser(name, password string) error {
 	url := fmt.Sprintf("http://%s/db/%s/users?u=%s&p=%s", db.host, db.database, db.username, db.password)
 	userInfo := map[string]string{
 		"name":     name,
@@ -34,7 +34,7 @@ func (db InfluxDB) AddDatabaseUser(name, password string) error {
 	return nil
 }
 
-func (db InfluxDB) DeleteDatabaseUser(name string) error {
+func (db *InfluxDB) DeleteDatabaseUser(name string) error {
 	url := fmt.Sprintf("http://%s/db/%s/users/%s?u=%s&p=%s", db.host, db.database, name, db.username, db.password)
 	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {
@@ -45,7 +45,7 @@ func (db InfluxDB) DeleteDatabaseUser(name string) error {
 	return nil
 }
 
-func (db InfluxDB) UpdateDatabaseUserPassword(name, password string) error {
+func (db *InfluxDB) UpdateDatabaseUserPassword(name, password string) error {
 	url := fmt.Sprintf("http://%s/db/%s/users/%s?u=%s&p=%s", db.host, db.database, name, db.username, db.password)
 	reqMap := map[string]string{
 		"password": password,
@@ -54,7 +54,7 @@ func (db InfluxDB) UpdateDatabaseUserPassword(name, password string) error {
 	return err
 }
 
-func (db InfluxDB) UpdateDatabaseUserPrivileges(name string, admin bool) error {
+func (db *InfluxDB) UpdateDatabaseUserPrivileges(name string, admin bool) error {
 	url := fmt.Sprintf("http://%s/db/%s/users/%s?u=%s&p=%s", db.host, db.database, name, db.username, db.password)
 	reqMap := map[string]bool{
 		"admin": admin,
