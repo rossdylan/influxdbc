@@ -14,6 +14,10 @@ type InfluxDB struct {
 }
 
 func (db InfluxDB) SeriesURL() string {
+func NewInfluxDB(host string, database string, username string, password string) *InfluxDB {
+	return &InfluxDB{host: host, database: database, username: username, password: password}
+}
+
 	return fmt.Sprintf("http://%s/db/%s/series?u=%s&p=%s", db.host, db.database, db.username, db.password)
 }
 
