@@ -4,7 +4,7 @@ import "testing"
 import "fmt"
 
 func Test_createURL(t *testing.T) {
-	testDB := InfluxDB{"localhost", "testdb", "tester", "password"}
+	testDB := NewInfluxDB("localhost", "testdb", "tester", "password")
 	url := testDB.SeriesURL()
 	expectedURL := "http://localhost/testdb/series?u=tester&p=password"
 	if url != "http://localhost/db/testdb/series?u=tester&p=password" {
@@ -31,7 +31,7 @@ func Test_NewSeries(t *testing.T) {
 }
 
 func Test_SeriesWrite(t *testing.T) {
-	database := InfluxDB{"localhost:8086", "testdb", "root", "root"}
+	database := NewInfluxDB("localhost:8086", "testdb", "root", "root")
 	series := NewSeries("testseries", "col1", "col2")
 	series.AddPoint("col1", "data", "col2 data")
 	fmt.Println(series)
@@ -39,12 +39,12 @@ func Test_SeriesWrite(t *testing.T) {
 }
 
 func Test_Query(t *testing.T) {
-	database := InfluxDB{"localhost:8086", "testdb", "root", "root"}
+	database := NewInfluxDB("localhost:8086", "testdb", "root", "root")
 	fmt.Println(database.Query("select * from testseries;", "s"))
 }
 
 func Test_GetClusterAdmins(t *testing.T) {
-	testDB := InfluxDB{"localhost:8086", "testdb", "root", "root"}
+	testDB := NewInfluxDB("localhost:8086", "testdb", "root", "root")
 	testDB.AddClusterAdmin("herp", "derp")
 	admins, _ := testDB.GetClusterAdmins()
 	fmt.Println(admins)

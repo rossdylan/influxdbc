@@ -13,21 +13,25 @@ type InfluxDB struct {
 	password string
 }
 
-func (db InfluxDB) SeriesURL() string {
+func NewInfluxDB(host string, database string, username string, password string) *InfluxDB {
+	return &InfluxDB{host: host, database: database, username: username, password: password}
+}
+
+func (db *InfluxDB) SeriesURL() string {
 	return fmt.Sprintf("http://%s/db/%s/series?u=%s&p=%s", db.host, db.database, db.username, db.password)
 }
 
-func (db InfluxDB) QueryURL(query, timePrecision string) string {
+func (db *InfluxDB) QueryURL(query, timePrecision string) string {
 	return fmt.Sprintf("http://%s/db/%s/series?u=%s&p=%s&q=query&time_precision=%s", db.host, db.database, db.username, db.password, query, timePrecision)
 }
 
-func (db InfluxDB) WriteSeries(s []Series) error {
+func (db *InfluxDB) WriteSeries(s []Series) error {
 	url := db.SeriesURL()
 	_, err := PostStruct(url, s)
 	return err
 }
 
-func (db InfluxDB) Query(query, tp string) ([]Series, error) {
+func (db *InfluxDB) Query(query, tp string) ([]Series, error) {
 	url := db.QueryURL(query, tp)
 	result, err := http.Get(url)
 	if err != nil {
