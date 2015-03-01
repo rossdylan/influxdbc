@@ -55,12 +55,12 @@ func PostStruct(url string, reqStruct interface{}) (string, error) {
 	marshalled, err := json.Marshal(reqStruct)
 	marshalled = bytes.ToLower(marshalled)
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 	buf := bytes.NewBuffer(marshalled)
 	result, err := http.Post(url, "application/json", buf)
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 	defer result.Body.Close()
 	result_buf := new(bytes.Buffer)
@@ -69,5 +69,4 @@ func PostStruct(url string, reqStruct interface{}) (string, error) {
 		return "", errors.New(result_buf.String())
 	}
 	return result_buf.String(), nil
-
 }
