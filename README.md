@@ -9,6 +9,6 @@ func main() {
     database := influxdbc.NewInfluxDB("localhost:8083", "testdb", "username", "password")
     series := influxdbc.NewSeries{"Col1", "Col2"}
     series.AddPoint("Col1 data", "Col2 data")
-    err := database.WriteSeries([]influx.Series{*series})
+    err := database.WriteSeries([]influxdbc.Series{*series})
 }
 ```
