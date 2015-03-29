@@ -3,17 +3,17 @@ package influxdbc
 type Series struct {
 	Name    string
 	Columns []string
-	Points  [][]string
+	Points  [][]interface{}
 }
 
 func NewSeries(name string, cols ...string) *Series {
 	s := new(Series)
 	s.Name = name
 	s.Columns = cols
-	s.Points = make([][]string, 0)
+	s.Points = make([][]interface{}, 0)
 	return s
 }
 
-func (s *Series) AddPoint(point ...string) {
+func (s *Series) AddPoint(point ...interface{}) {
 	s.Points = append(s.Points, point)
 }
