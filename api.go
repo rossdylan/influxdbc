@@ -22,7 +22,7 @@ func (db *InfluxDB) SeriesURL() string {
 }
 
 func (db *InfluxDB) QueryURL(query, timePrecision string) string {
-	return fmt.Sprintf("http://%s/db/%s/series?u=%s&p=%s&q=query&time_precision=%s", db.host, db.database, db.username, db.password, query, timePrecision)
+	return fmt.Sprintf("http://%s/db/%s/series?u=%s&p=%s&q=%s&time_precision=%s", db.host, db.database, db.username, db.password, query, timePrecision)
 }
 
 func (db *InfluxDB) WriteSeries(s []Series) error {
